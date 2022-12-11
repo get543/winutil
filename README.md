@@ -1,24 +1,28 @@
 # Chris Titus Tech's Windows Utility
 
-This Utility is a compilation of windows tasks I perform on each Windows system I use. It is meant to streamline *installs*, debloat with *tweaks*, troubleshoot with *config*, and fix Windows *updates*. I am extremely picky on any contributions to keep this project clean and efficient. 
+This Utility is a compilation of windows tasks I perform on each Windows system I use. It is meant to streamline _installs_, debloat with _tweaks_, troubleshoot with _config_, and fix Windows _updates_. I am extremely picky on any contributions to keep this project clean and efficient.
 
 ![screen-install](screen-install.png)
 
-Requires you to launch PowerShell or Windows Terminal As ADMINISTRATOR! 
+Requires you to launch PowerShell or Windows Terminal As ADMINISTRATOR!
 
-The recommended way is to right click on the start menu and select (PowerShell As Admin *Windows 10* - Windows Terminal As Admin *Windows 11*)
+The recommended way is to right click on the start menu and select (PowerShell As Admin _Windows 10_ - Windows Terminal As Admin _Windows 11_)
 
 Launch Command:
 
-```
+```powershell
 iwr -useb https://christitus.com/win | iex
 ```
+
 Or shorter Thanks to [#144](/../../issues/144)
-```
+
+```powershell
 irm christitus.com/win | iex
 ```
+
 If you are having TLS 1.2 Issues or You cannot find or resolve `christitus.com/win` then run with the following command:
-```
+
+```powershell
 [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/winutil.ps1')
 ```
 
@@ -44,7 +48,7 @@ Video and Written Article walkthrough @ <https://christitus.com/windows-tool/>
 
 ## Issues
 
-If you have any issues with the script please submit them to Issues tab here on GitHub and fill out the template so I can fix any bugs or make feature requests. 
+If you have any issues with the script please submit them to Issues tab here on GitHub and fill out the template so I can fix any bugs or make feature requests.
 
 ## Contribute Code
 

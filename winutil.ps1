@@ -16,7 +16,8 @@ $inputXML = (new-object Net.WebClient).DownloadString("https://raw.githubusercon
 # Check if chocolatey is installed and get its version
 if ((Get-Command -Name choco -ErrorAction Ignore) -and ($chocoVersion = (Get-Item "$env:ChocolateyInstall\choco.exe" -ErrorAction Ignore).VersionInfo.ProductVersion)) {
     Write-Output "Chocolatey Version $chocoVersion is already installed"
-}else {
+}
+else {
     Write-Output "Seems Chocolatey is not installed, installing now"
     Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     powershell choco feature enable -n allowGlobalConfirmation
@@ -114,12 +115,12 @@ Function Get-CheckBoxes {
 
     Param($Group)
 
-    $CheckBoxes = get-variable | Where-Object {$psitem.name -like "$Group*" -and $psitem.value.GetType().name -eq "CheckBox"}
+    $CheckBoxes = get-variable | Where-Object { $psitem.name -like "$Group*" -and $psitem.value.GetType().name -eq "CheckBox" }
     $Output = New-Object System.Collections.Generic.List[System.Object]
 
-    if($Group -eq "WPFInstall"){
-        Foreach ($CheckBox in $CheckBoxes){
-            if($CheckBox.value.ischecked -eq $true){
+    if ($Group -eq "WPFInstall") {
+        Foreach ($CheckBox in $CheckBoxes) {
+            if ($CheckBox.value.ischecked -eq $true) {
                 $Configs.applications.$($CheckBox.name).winget -split ";" | ForEach-Object {
                     $Output.Add($psitem)
                 }
@@ -144,13 +145,13 @@ function Set-Presets {
     $CheckBoxesToCheck = $configs.preset.$preset
 
     #Uncheck all 
-    get-variable | Where-Object {$_.name -like "*tweaks*"} | ForEach-Object {
-        if ($psitem.value.gettype().name -eq "CheckBox"){
+    get-variable | Where-Object { $_.name -like "*tweaks*" } | ForEach-Object {
+        if ($psitem.value.gettype().name -eq "CheckBox") {
             $CheckBox = Get-Variable $psitem.Name 
-            if ($CheckBoxesToCheck -contains $CheckBox.name){
+            if ($CheckBoxesToCheck -contains $CheckBox.name) {
                 $checkbox.value.ischecked = $true
             }
-            else{$checkbox.value.ischecked = $false}
+            else { $checkbox.value.ischecked = $false }
         }    
     }
 
@@ -211,7 +212,8 @@ $WPFinstall.Add_Click({
             #Gets the Windows Edition
             $OSName = if ($ComputerInfo.OSName) {
                 $ComputerInfo.OSName
-            }else {
+            }
+            else {
                 $ComputerInfo.WindowsProductName
             }
 
@@ -307,16 +309,16 @@ $WPFInstallUpgrade.Add_Click({
 # Tab 2 - Tweak Buttons
 #===========================================================================
 $WPFdesktop.Add_Click({
-    Set-Presets "Desktop"
-})
+        Set-Presets "Desktop"
+    })
 
 $WPFlaptop.Add_Click({
-    Set-Presets "laptop"
-})
+        Set-Presets "laptop"
+    })
 
 $WPFminimal.Add_Click({
-    Set-Presets "minimal"   
-})
+        Set-Presets "minimal"   
+    })
 
 $WPFtweaksbutton.Add_Click({
 
@@ -1015,40 +1017,38 @@ $WPFAddUltPerf.Add_Click({
         Write-Host "Adding Ultimate Performance Profile"
         powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
         Write-Host "Profile added"
-     }
+    }
 )
 
 $WPFRemoveUltPerf.Add_Click({
         Write-Host "Removing Ultimate Performance Profile"
         powercfg -delete e9a42b02-d5df-448d-aa00-03f14749eb61
         Write-Host "Profile Removed"
-     }
+    }
 )
 
-function Get-AppsUseLightTheme{
+function Get-AppsUseLightTheme {
     return (Get-ItemProperty -path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize').AppsUseLightTheme
 }
 
-function Get-SystemUsesLightTheme{
+function Get-SystemUsesLightTheme {
     return (Get-ItemProperty -path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize').SystemUsesLightTheme
 }
 
-$WPFToggleDarkMode.IsChecked = $(If ($(Get-AppsUseLightTheme) -eq 0 -And $(Get-SystemUsesLightTheme) -eq 0) {$true} Else {$false})
+$WPFToggleDarkMode.IsChecked = $(If ($(Get-AppsUseLightTheme) -eq 0 -And $(Get-SystemUsesLightTheme) -eq 0) { $true } Else { $false })
 
 $WPFToggleDarkMode.Add_Click({    
-    $EnableDarkMode = $WPFToggleDarkMode.IsChecked
-    $DarkMoveValue = $(If ( $EnableDarkMode ) {0} Else {1})
-    Write-Host $(If ( $EnableDarkMode ) {"Enabling Dark Mode"} Else {"Disabling Dark Mode"})
-    $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-    If ($DarkMoveValue -ne $(Get-AppsUseLightTheme))
-    {
-        Set-ItemProperty $Theme AppsUseLightTheme -Value $DarkMoveValue
-    }
-    If ($DarkMoveValue -ne $(Get-SystemUsesLightTheme))
-    {
-        Set-ItemProperty $Theme SystemUsesLightTheme -Value $DarkMoveValue
-    }
-    Write-Host $(If ( $EnableDarkMode ) {"Enabled"} Else {"Disabled"})
+        $EnableDarkMode = $WPFToggleDarkMode.IsChecked
+        $DarkMoveValue = $(If ( $EnableDarkMode ) { 0 } Else { 1 })
+        Write-Host $(If ( $EnableDarkMode ) { "Enabling Dark Mode" } Else { "Disabling Dark Mode" })
+        $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+        If ($DarkMoveValue -ne $(Get-AppsUseLightTheme)) {
+            Set-ItemProperty $Theme AppsUseLightTheme -Value $DarkMoveValue
+        }
+        If ($DarkMoveValue -ne $(Get-SystemUsesLightTheme)) {
+            Set-ItemProperty $Theme SystemUsesLightTheme -Value $DarkMoveValue
+        }
+        Write-Host $(If ( $EnableDarkMode ) { "Enabled" } Else { "Disabled" })
 
     }
 )

@@ -10,15 +10,15 @@ $BranchToUse = 'main'
 
 #region Variables
 
-    $sync = [Hashtable]::Synchronized(@{})
-    $sync.logfile = "$env:TEMP\winutil.log"
+$sync = [Hashtable]::Synchronized(@{})
+$sync.logfile = "$env:TEMP\winutil.log"
 
-    $sync.taskrunning = $false
-    $sync.taskmessage = "There is currently a task running. Please try again once previous task is complete."
-    $sync.tasktitle = "Task in progress"
+$sync.taskrunning = $false
+$sync.taskmessage = "There is currently a task running. Please try again once previous task is complete."
+$sync.tasktitle = "Task in progress"
 
-    $VerbosePreference = "Continue"
-    if(!$env:args){$gui = $true}
+$VerbosePreference = "Continue"
+if (!$env:args) { $gui = $true }
 
 #endregion Variables
 
@@ -44,28 +44,28 @@ function Invoke-Button {
     #Use this to get the name of the button
     #[System.Windows.MessageBox]::Show("$Button","Chris Titus Tech's Windows Utility","OK","Info")
 
-    Switch -Wildcard ($Button){
+    Switch -Wildcard ($Button) {
 
-        "*Tab*BT*" {switchtab $Button}
-        "*InstallUpgrade*" {Invoke-command $sync.GUIInstallPrograms -ArgumentList "Upgrade"}
-        "*desktop*" {Tweak-Buttons $Button}
-        "*laptop*" {Tweak-Buttons $Button}
-        "*minimal*" {Tweak-Buttons $Button}
-        "*undoall*" {Invoke-command $Sync.GUIUndoTweaks}
-        "install" {Invoke-command $sync.GUIInstallPrograms -ArgumentList "$(uncheckall "Install")"}
-        "tweaksbutton" {Invoke-command $Sync.GUITweaks -ArgumentList "$(uncheckall "tweaks")"}
-        "FeatureInstall" {Invoke-command $Sync.GUIFeatures -ArgumentList "$(uncheckall "feature")"}
-        "Panelcontrol" {cmd /c control}
-        "Panelnetwork" {cmd /c ncpa.cpl}
-        "Panelpower" {cmd /c powercfg.cpl}
-        "Panelsound" {cmd /c mmsys.cpl}
-        "Panelsystem" {cmd /c sysdm.cpl}
-        "Paneluser" {cmd /c "control userpasswords2"}
-        "Updates*" {Invoke-command $sync.GUIUpdates -ArgumentList "$button"}
-        "FixesUpdate" {Invoke-command $sync.GUIUpdates -ArgumentList "$button"}
-        "*AutoLogin" {Invoke-Runspace $Sync.AutologinInstall}
-        "DisableDarkMode" {Invoke-Runspace $Sync.DarkModeToggle -ArgumentList "$False"}
-        "EnableDarkMode" {Invoke-Runspace $Sync.DarkModeToggle -ArgumentList "$True"}
+        "*Tab*BT*" { switchtab $Button }
+        "*InstallUpgrade*" { Invoke-command $sync.GUIInstallPrograms -ArgumentList "Upgrade" }
+        "*desktop*" { Tweak-Buttons $Button }
+        "*laptop*" { Tweak-Buttons $Button }
+        "*minimal*" { Tweak-Buttons $Button }
+        "*undoall*" { Invoke-command $Sync.GUIUndoTweaks }
+        "install" { Invoke-command $sync.GUIInstallPrograms -ArgumentList "$(uncheckall "Install")" }
+        "tweaksbutton" { Invoke-command $Sync.GUITweaks -ArgumentList "$(uncheckall "tweaks")" }
+        "FeatureInstall" { Invoke-command $Sync.GUIFeatures -ArgumentList "$(uncheckall "feature")" }
+        "Panelcontrol" { cmd /c control }
+        "Panelnetwork" { cmd /c ncpa.cpl }
+        "Panelpower" { cmd /c powercfg.cpl }
+        "Panelsound" { cmd /c mmsys.cpl }
+        "Panelsystem" { cmd /c sysdm.cpl }
+        "Paneluser" { cmd /c "control userpasswords2" }
+        "Updates*" { Invoke-command $sync.GUIUpdates -ArgumentList "$button" }
+        "FixesUpdate" { Invoke-command $sync.GUIUpdates -ArgumentList "$button" }
+        "*AutoLogin" { Invoke-Runspace $Sync.AutologinInstall }
+        "DisableDarkMode" { Invoke-Runspace $Sync.DarkModeToggle -ArgumentList "$False" }
+        "EnableDarkMode" { Invoke-Runspace $Sync.DarkModeToggle -ArgumentList "$True" }
         "PanelDISM" {
             Start-Process PowerShell -ArgumentList "Write-Host '(1/4) Chkdsk' -ForegroundColor Green; Chkdsk /scan; 
             Write-Host '`n(2/4) SFC - 1st scan' -ForegroundColor Green; sfc /scannow;
@@ -95,22 +95,22 @@ function uncheckall {
 
     param($group)
 
-    if ($sync.taskrunning -eq $true){
+    if ($sync.taskrunning -eq $true) {
         return
     }
 
-    $sync.keys | Where-Object {$psitem -like "*$($group)?*" `
-                            -and $psitem -notlike "$($group)Install" `
-                            -and $psitem -notlike "*GUI*" `
-                            -and $psitem -notlike "*Script*"
-                        } | ForEach-Object {
-        if ($sync["$psitem"].IsChecked -eq $true){
+    $sync.keys | Where-Object { $psitem -like "*$($group)?*" `
+            -and $psitem -notlike "$($group)Install" `
+            -and $psitem -notlike "*GUI*" `
+            -and $psitem -notlike "*Script*"
+    } | ForEach-Object {
+        if ($sync["$psitem"].IsChecked -eq $true) {
             $output += ",$psitem"
             $sync["$psitem"].IsChecked = $false
         }
     }
     
-    if($output){Write-Output $output.Substring(1)}
+    if ($output) { Write-Output $output.Substring(1) }
 }
 
 function Invoke-Runspace {
@@ -158,12 +158,12 @@ function switchtab {
     #>
 
     Param ($button)
-    $x = [int]($button -replace "Tab","" -replace "BT","") - 1
+    $x = [int]($button -replace "Tab", "" -replace "BT", "") - 1
 
     0..3 | ForEach-Object {
         
-        if ($x -eq $psitem){$sync["TabNav"].Items[$psitem].IsSelected = $true}
-        else{$sync["TabNav"].Items[$psitem].IsSelected = $false}
+        if ($x -eq $psitem) { $sync["TabNav"].Items[$psitem].IsSelected = $true }
+        else { $sync["TabNav"].Items[$psitem].IsSelected = $false }
     }
 }
 
@@ -179,9 +179,9 @@ Function Tweak-Buttons {
     Param ($button)
     $preset = $sync.preset.$button
 
-    $sync.keys | Where-Object {$psitem -like "*tweaks?*" -and $psitem -notlike "tweaksbutton"} | ForEach-Object {
-        if ($preset -contains $psitem ){$sync["$psitem"].IsChecked = $True}
-        Else{$sync["$psitem"].IsChecked = $false} 
+    $sync.keys | Where-Object { $psitem -like "*tweaks?*" -and $psitem -notlike "tweaksbutton" } | ForEach-Object {
+        if ($preset -contains $psitem ) { $sync["$psitem"].IsChecked = $True }
+        Else { $sync["$psitem"].IsChecked = $false } 
     }
 }
 
@@ -223,11 +223,11 @@ $sync.WriteLogs = {
     $date = get-date
     $delimiter = '|'
     write-output "$date $delimiter $Level $delimiter $message" |  out-file -Append -Encoding ascii -FilePath $LogPath
-    if($Level -eq "ERROR" -or $Level -eq "FAILURE"){
+    if ($Level -eq "ERROR" -or $Level -eq "FAILURE") {
         write-Error "$date $delimiter $Level $delimiter $message"
         return
     }
-    if($Level -eq "Warning"){
+    if ($Level -eq "Warning") {
         Write-Warning "$date $delimiter $Level $delimiter $message"
         return
     }
@@ -247,13 +247,13 @@ $Sync.DarkModeToggle = {
 
     $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 
-    if($enabled -eq $True){
+    if ($enabled -eq $True) {
         Set-ItemProperty $Theme AppsUseLightTheme -Value 0
-        Invoke-command $sync.WriteLogs -ArgumentList ("INFO","Dark Mode has been enabled",$sync.logfile)
+        Invoke-command $sync.WriteLogs -ArgumentList ("INFO", "Dark Mode has been enabled", $sync.logfile)
     }
-    if($enabled -eq $False){
+    if ($enabled -eq $False) {
         Set-ItemProperty $Theme AppsUseLightTheme -Value 1
-        Invoke-command $sync.WriteLogs -ArgumentList ("INFO","Dark Mode has been disabled",$sync.logfile)
+        Invoke-command $sync.WriteLogs -ArgumentList ("INFO", "Dark Mode has been disabled", $sync.logfile)
     }
 
 }
@@ -292,51 +292,52 @@ $Sync.GUIInstallPrograms = {
 
     #Check if any check boxes have been checked and if a task is currently running
 
-        if ($sync.taskrunning -eq $true){
-            [System.Windows.MessageBox]::Show($sync.taskmessage,$sync.tasktitle,"OK","Info")
-            return
-        }
+    if ($sync.taskrunning -eq $true) {
+        [System.Windows.MessageBox]::Show($sync.taskmessage, $sync.tasktitle, "OK", "Info")
+        return
+    }
 
-        if($programstoinstall -notlike "*install*"){
-            [System.Windows.MessageBox]::Show("Please check the applications you wish to install",'Nothing to do',"OK","Info")
-            return
-        }
+    if ($programstoinstall -notlike "*install*") {
+        [System.Windows.MessageBox]::Show("Please check the applications you wish to install", 'Nothing to do', "OK", "Info")
+        return
+    }
 
     #Section to see if winget will upgrade all installs or which winget commands to run from  config/applications.json
     
-        $programstoinstall = $programstoinstall -split ","
+    $programstoinstall = $programstoinstall -split ","
 
-        if($programstoinstall -eq "Upgrade"){
-            $winget = ",Upgrade"
-        }
-        else{
-            foreach ($program in $programstoinstall){
+    if ($programstoinstall -eq "Upgrade") {
+        $winget = ",Upgrade"
+    }
+    else {
+        foreach ($program in $programstoinstall) {
 
-                $($sync.applications.install.$("WPF" + $program).winget) -split ";" | ForEach-Object {
-                    if($psitem){
-                        $winget += ",$psitem"
-                    }Else{
-                        Invoke-command $sync.WriteLogs -ArgumentList ("WARNING","$Program Not found") 
-                    }
+            $($sync.applications.install.$("WPF" + $program).winget) -split ";" | ForEach-Object {
+                if ($psitem) {
+                    $winget += ",$psitem"
+                }
+                Else {
+                    Invoke-command $sync.WriteLogs -ArgumentList ("WARNING", "$Program Not found") 
                 }
             }
         }
+    }
         
-        if($winget -eq $null){
-            [System.Windows.MessageBox]::Show("No found applications to install",'Nothing to do',"OK","Info")
-            return
-        }           
+    if ($winget -eq $null) {
+        [System.Windows.MessageBox]::Show("No found applications to install", 'Nothing to do', "OK", "Info")
+        return
+    }           
         
     #Invoke a runspace so that the GUI does not lock up
 
-        $sync.taskrunning = $true
+    $sync.taskrunning = $true
 
-        $params = @{
-            ScriptBlock = $sync.ScriptsInstallPrograms
-            ArgumentList = "$($winget.substring(1))"
-            Verbose = $true
-        }
-        Invoke-Runspace @params
+    $params = @{
+        ScriptBlock  = $sync.ScriptsInstallPrograms
+        ArgumentList = "$($winget.substring(1))"
+        Verbose      = $true
+    }
+    Invoke-Runspace @params
 
 }
 
@@ -372,87 +373,89 @@ $sync.ScriptsInstallPrograms = {
 
     function Write-Logs {
         param($Level, $Message, $LogPath)
-        Invoke-command $sync.WriteLogs -ArgumentList ($Level,$Message,$LogPath)
+        Invoke-command $sync.WriteLogs -ArgumentList ($Level, $Message, $LogPath)
     }
 
     #region Check for WinGet and install if not present
 
-        if (Test-Path $env:userprofile\AppData\Local\Microsoft\WindowsApps\winget.exe) {
-            #Checks if winget executable exists and if the Windows Version is 1809 or higher
-            Write-Logs -Level INFO -Message "WinGet was detected" -LogPath $sync.logfile
+    if (Test-Path $env:userprofile\AppData\Local\Microsoft\WindowsApps\winget.exe) {
+        #Checks if winget executable exists and if the Windows Version is 1809 or higher
+        Write-Logs -Level INFO -Message "WinGet was detected" -LogPath $sync.logfile
+    }
+    else {
+
+        if (($sync.ComputerInfo.WindowsVersion) -lt "1809") {
+            #Checks if Windows Version is too old for winget
+            Write-Logs -Level Warning -Message "Winget is not supported on this version of Windows (Pre-1809). Stopping installs" -LogPath $sync.logfile
+            return
+        }
+
+        Write-Logs -Level INFO -Message "WinGet was not detected" -LogPath $sync.logfile
+
+        if (((($sync.ComputerInfo.OSName.IndexOf("LTSC")) -ne -1) -or ($sync.ComputerInfo.OSName.IndexOf("Server") -ne -1)) -and (($sync.ComputerInfo.WindowsVersion) -ge "1809")) {
+            Try {
+                #Checks if Windows edition is LTSC/Server 2019+
+                #Manually Installing Winget
+                Write-Logs -Level INFO -Message "LTSC/Server Edition detected. Running Alternative Installer" -LogPath $sync.logfile
+    
+                #Download Needed Files
+                $step = "Downloading the required files"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
+                Start-BitsTransfer -Source "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -Destination "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -ErrorAction Stop
+                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Destination "$ENV:TEMP/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -ErrorAction Stop
+                Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/b0a0692da1034339b76dce1c298a1e42_License1.xml" -Destination "$ENV:TEMP/b0a0692da1034339b76dce1c298a1e42_License1.xml" -ErrorAction Stop
+    
+                #Installing Packages
+                $step = "Installing Packages"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
+                Add-AppxProvisionedPackage -Online -PackagePath "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -SkipLicense -ErrorAction Stop
+                Add-AppxProvisionedPackage -Online -PackagePath "$ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -LicensePath "$ENV:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml" -ErrorAction Stop
+                    
+                #Sleep for 5 seconds to maximize chance that winget will work without reboot
+                Start-Sleep -s 5
+    
+                #Removing no longer needed Files
+                $step = "Removing Files"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
+                Remove-Item -Path "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -Force
+                Remove-Item -Path "$ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force
+                Remove-Item -Path "$ENV:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml" -Force
+
+                $step = "WinGet Sucessfully installed"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
+
+            }
+            Catch { Write-Logs -Level FAILURE -Message "WinGet Install failed at $step" -LogPath $sync.logfile }
         }
         else {
+            Try {
+                #Installing Winget from the Microsoft Store                       
+                $step = "Installing WinGet"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
+                Start-Process "ms-appinstaller:?source=https://aka.ms/getwinget"
+                $nid = (Get-Process AppInstaller).Id
+                Wait-Process -Id $nid
 
-            if (($sync.ComputerInfo.WindowsVersion) -lt "1809") {
-                #Checks if Windows Version is too old for winget
-                Write-Logs -Level Warning -Message "Winget is not supported on this version of Windows (Pre-1809). Stopping installs" -LogPath $sync.logfile
-                return
+                $step = "Winget Installed"
+                Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
             }
-
-            Write-Logs -Level INFO -Message "WinGet was not detected" -LogPath $sync.logfile
-
-            if (((($sync.ComputerInfo.OSName.IndexOf("LTSC")) -ne -1) -or ($sync.ComputerInfo.OSName.IndexOf("Server") -ne -1)) -and (($sync.ComputerInfo.WindowsVersion) -ge "1809")) {
-                Try{
-                    #Checks if Windows edition is LTSC/Server 2019+
-                    #Manually Installing Winget
-                    Write-Logs -Level INFO -Message "LTSC/Server Edition detected. Running Alternative Installer" -LogPath $sync.logfile
-    
-                    #Download Needed Files
-                    $step = "Downloading the required files"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-                    Start-BitsTransfer -Source "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -Destination "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -ErrorAction Stop
-                    Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Destination "$ENV:TEMP/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -ErrorAction Stop
-                    Start-BitsTransfer -Source "https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/b0a0692da1034339b76dce1c298a1e42_License1.xml" -Destination "$ENV:TEMP/b0a0692da1034339b76dce1c298a1e42_License1.xml" -ErrorAction Stop
-    
-                    #Installing Packages
-                    $step = "Installing Packages"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-                    Add-AppxProvisionedPackage -Online -PackagePath "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -SkipLicense -ErrorAction Stop
-                    Add-AppxProvisionedPackage -Online -PackagePath "$ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -LicensePath "$ENV:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml" -ErrorAction Stop
-                    
-                    #Sleep for 5 seconds to maximize chance that winget will work without reboot
-                    Start-Sleep -s 5
-    
-                    #Removing no longer needed Files
-                    $step = "Removing Files"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-                    Remove-Item -Path "$ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx" -Force
-                    Remove-Item -Path "$ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force
-                    Remove-Item -Path "$ENV:TEMP\b0a0692da1034339b76dce1c298a1e42_License1.xml" -Force
-
-                    $step = "WinGet Sucessfully installed"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-
-                }Catch{Write-Logs -Level FAILURE -Message "WinGet Install failed at $step" -LogPath $sync.logfile}
-            }
-            else {
-                Try{
-                    #Installing Winget from the Microsoft Store                       
-                    $step = "Installing WinGet"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-                    Start-Process "ms-appinstaller:?source=https://aka.ms/getwinget"
-                    $nid = (Get-Process AppInstaller).Id
-                    Wait-Process -Id $nid
-
-                    $step = "Winget Installed"
-                    Write-Logs -Level INFO -Message $step -LogPath $sync.logfile
-                }Catch{Write-Logs -Level FAILURE -Message "WinGet Install failed at $step" -LogPath $sync.logfile}
-            }
-            Write-Logs -Level INFO -Message "WinGet has been installed" -LogPath $sync.logfile
-            Start-Sleep -Seconds 15
+            Catch { Write-Logs -Level FAILURE -Message "WinGet Install failed at $step" -LogPath $sync.logfile }
         }
+        Write-Logs -Level INFO -Message "WinGet has been installed" -LogPath $sync.logfile
+        Start-Sleep -Seconds 15
+    }
 
     #endregion Check for WinGet and install if not present
 
     $results = @()
-    foreach ($program in $programstoinstall){
-        if($programstoinstall -eq "Upgrade"){
+    foreach ($program in $programstoinstall) {
+        if ($programstoinstall -eq "Upgrade") {
             $Message = "Attempting to upgrade packages"
             $ErrorMessage = "Failed to upgrade packages"
             $SuccessMessage = "Upgardes have completed"
             $ArgumentList = "upgrade --all"
         }
-        else{
+        else {
             $Message = "$($program) was selected to be installed."
             $ErrorMessage = "$($program) failed to installed."
             $SuccessMessage = "$($program) has been installed"
@@ -472,9 +475,9 @@ $sync.ScriptsInstallPrograms = {
     }
 
     Write-Logs -Level INFO -Message "Installs have completed" -LogPath $sync.logfile
-    if($sync["Form"]){
+    if ($sync["Form"]) {
         $sync.taskrunning = $false
-        [System.Windows.MessageBox]::Show("All applications have been installed",'Installs are done!',"OK","Info")
+        [System.Windows.MessageBox]::Show("All applications have been installed", 'Installs are done!', "OK", "Info")
     }
 }
 
@@ -512,26 +515,26 @@ $Sync.GUITweaks = {
 
     #Check if any check boxes have been checked and if a task is currently running
 
-        if ($sync.taskrunning -eq $true){
-            [System.Windows.MessageBox]::Show($sync.taskmessage,$sync.tasktitle,"OK","Info")
-            return
-        }
+    if ($sync.taskrunning -eq $true) {
+        [System.Windows.MessageBox]::Show($sync.taskmessage, $sync.tasktitle, "OK", "Info")
+        return
+    }
 
-        if($Tweakstorun -notlike "*Tweaks*"){
-            [System.Windows.MessageBox]::Show("Please check the applications you wish to install",'Nothing to do',"OK","Info")
-            return
-        }
+    if ($Tweakstorun -notlike "*Tweaks*") {
+        [System.Windows.MessageBox]::Show("Please check the applications you wish to install", 'Nothing to do', "OK", "Info")
+        return
+    }
 
-        $sync.taskrunning = $true
+    $sync.taskrunning = $true
 
     #Invoke a runspace so that the GUI does not lock up
 
-        $params = @{
-            ScriptBlock = $sync.ScriptTweaks
-            ArgumentList = ("$Tweakstorun")
-        }
+    $params = @{
+        ScriptBlock  = $sync.ScriptTweaks
+        ArgumentList = ("$Tweakstorun")
+    }
         
-        Invoke-Runspace @params
+    Invoke-Runspace @params
 
 }
 
@@ -563,7 +566,7 @@ $Sync.ScriptTweaks = {
 
     function Write-Logs {
         param($Level, $Message, $LogPath)
-        Invoke-command $sync.WriteLogs -ArgumentList ($Level,$Message, $LogPath)
+        Invoke-command $sync.WriteLogs -ArgumentList ($Level, $Message, $LogPath)
     }
 
     Write-Logs -Level INFO -Message "Gathering required modifications" -LogPath $sync.logfile
@@ -588,11 +591,11 @@ $Sync.ScriptTweaks = {
         $sync.tweaks.$psitem.InvokeScript
     }
 
-    if($RegistryToModify){
+    if ($RegistryToModify) {
         Write-Logs -Level INFO -Message "Starting Registry Modification" -LogPath $sync.logfile
 
         $RegistryToModify | ForEach-Object {
-            if(!(Test-Path $psitem.path)){
+            if (!(Test-Path $psitem.path)) {
                 $Step = "create"
                 Write-Logs -Level INFO -Message "$($psitem.path) did not exist. Creating" -LogPath $sync.logfile
                 New-Item -Path $psitem.path -Force | Out-Null
@@ -606,51 +609,53 @@ $Sync.ScriptTweaks = {
         Write-Logs -Level INFO -Message "Finished setting registry" -LogPath $sync.logfile
     }
 
-    if($ServicesToModify){
+    if ($ServicesToModify) {
         Write-Logs -Level INFO -Message "Starting Services Modification" -LogPath $sync.logfile
 
         $ServicesToModify | ForEach-Object {
-                Stop-Service "$($psitem.name)" 
-                Set-Service "$($psitem.name)" -StartupType $($psitem.StartupType)
-                Write-Logs -Level INFO -Message "Service $($psitem.name) set to  $($psitem.StartupType)" -LogPath $sync.logfile
+            Stop-Service "$($psitem.name)" 
+            Set-Service "$($psitem.name)" -StartupType $($psitem.StartupType)
+            Write-Logs -Level INFO -Message "Service $($psitem.name) set to  $($psitem.StartupType)" -LogPath $sync.logfile
         }
 
         Write-Logs -Level INFO -Message "Finished setting Services" -LogPath $sync.logfile
     }
     
-    if($ScheduledTaskToModify){
+    if ($ScheduledTaskToModify) {
         Write-Logs -Level INFO -Message "Starting ScheduledTask Modification" -LogPath $sync.logfile
 
         $ScheduledTaskToModify | ForEach-Object {
-            Try{
-                if($($psitem.State) -eq "Disabled"){
+            Try {
+                if ($($psitem.State) -eq "Disabled") {
                     Disable-ScheduledTask -TaskName "$($psitem.name)" -ErrorAction Stop | Out-Null
                 }
-                if($($psitem.State) -eq "Enabled"){
+                if ($($psitem.State) -eq "Enabled") {
                     Enable-TaskName "$($psitem.name)" -ErrorAction Stop | Out-Null
                 }
                 Write-Logs -Level INFO -Message "Scheduled Task $($psitem.name) set to  $($psitem.State)" -LogPath $sync.logfile
-            }Catch{Write-Logs -Level ERROR -Message "Unable to set Scheduled Task $($psitem.name) set to  $($psitem.State)" -LogPath $sync.logfile}
+            }
+            Catch { Write-Logs -Level ERROR -Message "Unable to set Scheduled Task $($psitem.name) set to  $($psitem.State)" -LogPath $sync.logfile }
         }
 
         Write-Logs -Level INFO -Message "Finished setting ScheduledTasks" -LogPath $sync.logfile
     }
 
-    if($AppxToModify){
+    if ($AppxToModify) {
         Write-Logs -Level INFO -Message "Starting Appx Modification" -LogPath $sync.logfile
 
         $AppxToModify | ForEach-Object {
-            Try{
-                Get-AppxPackage -Name $psitem| Remove-AppxPackage -ErrorAction Stop
+            Try {
+                Get-AppxPackage -Name $psitem | Remove-AppxPackage -ErrorAction Stop
                 Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $psitem | Remove-AppxProvisionedPackage -ErrorAction stop -Online
                 Write-Logs -Level INFO -Message "Uninstalled $psitem" -LogPath $sync.logfile
-            }Catch{Write-Logs -Level ERROR -Message "Failed to uninstall $psitem" -LogPath $sync.logfile }
+            }
+            Catch { Write-Logs -Level ERROR -Message "Failed to uninstall $psitem" -LogPath $sync.logfile }
         }
 
         Write-Logs -Level INFO -Message "Finished uninstalling Appx" -LogPath $sync.logfile
     }
 
-    if($ScriptsToRun){
+    if ($ScriptsToRun) {
         Write-Logs -Level INFO -Message "Running Scripts" -LogPath $sync.logfile
 
         $ScriptsToRun | ForEach-Object {
@@ -670,9 +675,9 @@ $Sync.ScriptTweaks = {
 
     Write-Logs -Level INFO -Message "Tweaks finished" -LogPath $sync.logfile
     
-    if($sync["Form"]){
+    if ($sync["Form"]) {
         $sync.taskrunning = $false
-        [System.Windows.MessageBox]::Show("All modifications have finished",'Tweaks are done!',"OK","Info")
+        [System.Windows.MessageBox]::Show("All modifications have finished", 'Tweaks are done!', "OK", "Info")
     }
 }
 
@@ -691,16 +696,16 @@ $Sync.GUIUndoTweaks = {
 
     #Check if any check boxes have been checked and if a task is currently running
 
-        if ($sync.taskrunning -eq $true){
-            [System.Windows.MessageBox]::Show($sync.taskmessage,$sync.tasktitle,"OK","Info")
-            return
-        }
+    if ($sync.taskrunning -eq $true) {
+        [System.Windows.MessageBox]::Show($sync.taskmessage, $sync.tasktitle, "OK", "Info")
+        return
+    }
 
-        $sync.taskrunning = $true
+    $sync.taskrunning = $true
 
     #Invoke a runspace so that the GUI does not lock up            
 
-        Invoke-Runspace $sync.ScriptUndoTweaks
+    Invoke-Runspace $sync.ScriptUndoTweaks
 }
 
 $sync.ScriptUndoTweaks = {
@@ -722,7 +727,7 @@ $sync.ScriptUndoTweaks = {
 
     function Write-Logs {
         param($Level, $Message, $LogPath)
-        Invoke-command $sync.WriteLogs -ArgumentList ($Level,$Message, $LogPath)
+        Invoke-command $sync.WriteLogs -ArgumentList ($Level, $Message, $LogPath)
     }
 
     Write-Logs -Level INFO -Message "Creating Restore Point incase something bad happens" -LogPath $sync.logfile
@@ -731,38 +736,38 @@ $sync.ScriptUndoTweaks = {
 
     foreach ($tweak in $($sync.tweaks.psobject.properties)) {
 
-            #registry reset
-            Foreach ($registries in $($tweak.value.registry)){
-                foreach($registry in $registries){
-                    Write-Logs -Level INFO -Message "Setting $("$($registry.path)\$($registry.name)") to $($registry.OriginalValue)" -LogPath $sync.logfile
-                    Set-ItemProperty -Path $registry.path -Name $registry.name -Type $registry.type -Value $registry.OriginalValue
-                }
+        #registry reset
+        Foreach ($registries in $($tweak.value.registry)) {
+            foreach ($registry in $registries) {
+                Write-Logs -Level INFO -Message "Setting $("$($registry.path)\$($registry.name)") to $($registry.OriginalValue)" -LogPath $sync.logfile
+                Set-ItemProperty -Path $registry.path -Name $registry.name -Type $registry.type -Value $registry.OriginalValue
             }
-            Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) registries" -LogPath $sync.logfile
+        }
+        Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) registries" -LogPath $sync.logfile
 
-            #Services modification 
-            Foreach ($services in $($tweak.value.service)){
-                foreach($service in $services) {
-                    Stop-Service "$($service.name)"
-                    Set-Service "$($service.name)" -StartupType $($service.OriginalType)
-                    Write-Logs -Level INFO -Message "Service $($service.name) set to  $($service.OriginalType)" -LogPath $sync.logfile
-                }
+        #Services modification 
+        Foreach ($services in $($tweak.value.service)) {
+            foreach ($service in $services) {
+                Stop-Service "$($service.name)"
+                Set-Service "$($service.name)" -StartupType $($service.OriginalType)
+                Write-Logs -Level INFO -Message "Service $($service.name) set to  $($service.OriginalType)" -LogPath $sync.logfile
             }
-            Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) Services" -LogPath $sync.logfile
+        }
+        Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) Services" -LogPath $sync.logfile
 
-            #Scheduled Tasks Modification
-            Foreach ($ScheduledTasks in $($tweak.value.ScheduledTask)){
-                foreach($ScheduledTask in $ScheduledTasks) {
-                    if($($ScheduledTask.OriginalState) -eq "Disabled"){
-                        Disable-ScheduledTask -TaskName "$($ScheduledTask.name)" | Out-Null
-                    }
-                    if($($ScheduledTask.OriginalState) -eq "Enabled"){
-                        Enable-TaskName "$($ScheduledTask.name)"  | Out-Null
-                    }
-                    Write-Logs -Level INFO -Message "Scheduled Task $($ScheduledTask.name) set to  $($ScheduledTask.OriginalState)" -LogPath $sync.logfile
+        #Scheduled Tasks Modification
+        Foreach ($ScheduledTasks in $($tweak.value.ScheduledTask)) {
+            foreach ($ScheduledTask in $ScheduledTasks) {
+                if ($($ScheduledTask.OriginalState) -eq "Disabled") {
+                    Disable-ScheduledTask -TaskName "$($ScheduledTask.name)" | Out-Null
                 }
+                if ($($ScheduledTask.OriginalState) -eq "Enabled") {
+                    Enable-TaskName "$($ScheduledTask.name)"  | Out-Null
+                }
+                Write-Logs -Level INFO -Message "Scheduled Task $($ScheduledTask.name) set to  $($ScheduledTask.OriginalState)" -LogPath $sync.logfile
             }
-            Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) Scheduled Tasks" -LogPath $sync.logfile                  
+        }
+        Write-Logs -Level INFO -Message "Finished reseting $($tweak.name) Scheduled Tasks" -LogPath $sync.logfile                  
     }
 
     Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Power" -Name "HibernteEnabled" -Type Dword -Value 1
@@ -802,11 +807,11 @@ $sync.ScriptUndoTweaks = {
     Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Clipboard" -Name "EnableClipboardHistory" -ErrorAction SilentlyContinue
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "AllowClipboardHistory" -ErrorAction SilentlyContinue
 
-    Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "UserPreferencesMask" -Type Binary -Value ([byte[]](158,30,7,128,18,0,0,0))
+    Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "UserPreferencesMask" -Type Binary -Value ([byte[]](158, 30, 7, 128, 18, 0, 0, 0))
 
-    if($sync["Form"]){
+    if ($sync["Form"]) {
         $sync.taskrunning = $false
-        [System.Windows.MessageBox]::Show("All tweaks have been removed",'Undo is done!',"OK","Info")
+        [System.Windows.MessageBox]::Show("All tweaks have been removed", 'Undo is done!', "OK", "Info")
     }
 }
 
@@ -844,26 +849,26 @@ $Sync.GUIFeatures = {
 
     #Check if any check boxes have been checked and if a task is currently running 
 
-        if ($sync.taskrunning -eq $true){
-            [System.Windows.MessageBox]::Show($sync.taskmessage,$sync.tasktitle,"OK","Info")
-            return
-        }
+    if ($sync.taskrunning -eq $true) {
+        [System.Windows.MessageBox]::Show($sync.taskmessage, $sync.tasktitle, "OK", "Info")
+        return
+    }
 
-        if($featuretoinstall -notlike "*Features*"){
-            [System.Windows.MessageBox]::Show("Please check the features you wish to install",'Nothing to do',"OK","Info")
-            return
-        }
+    if ($featuretoinstall -notlike "*Features*") {
+        [System.Windows.MessageBox]::Show("Please check the features you wish to install", 'Nothing to do', "OK", "Info")
+        return
+    }
 
-        $sync.taskrunning = $true
+    $sync.taskrunning = $true
 
     #Invoke a runspace so that the GUI does not lock up  
         
-        $params = @{
-            ScriptBlock = $sync.ScriptFeatureInstall
-            ArgumentList = ("$featuretoinstall")
-        }
+    $params = @{
+        ScriptBlock  = $sync.ScriptFeatureInstall
+        ArgumentList = ("$featuretoinstall")
+    }
         
-        Invoke-Runspace @params
+    Invoke-Runspace @params
 
 }
 
@@ -894,17 +899,18 @@ $sync.ScriptFeatureInstall = {
 
     function Write-Logs {
         param($Level, $Message, $LogPath)
-        Invoke-command $sync.WriteLogs -ArgumentList ($Level,$Message, $LogPath)
+        Invoke-command $sync.WriteLogs -ArgumentList ($Level, $Message, $LogPath)
     }
     
-    Foreach ($feature in $featuretoinstall){
+    Foreach ($feature in $featuretoinstall) {
 
         $sync.feature.$feature | ForEach-Object {
-            Try{
+            Try {
                 Write-Logs -Level INFO -Message "Installing Windows Feature $psitem" -LogPath $sync.logfile
                 Enable-WindowsOptionalFeature -Online -FeatureName "$psitem" -All -NoRestart
                 Write-output $psitem
-            }Catch{Write-Logs -Level ERROR -Message "Failed to install $psitem" -LogPath $sync.logfile}
+            }
+            Catch { Write-Logs -Level ERROR -Message "Failed to install $psitem" -LogPath $sync.logfile }
 
         }
 
@@ -912,9 +918,9 @@ $sync.ScriptFeatureInstall = {
 
     Write-Logs -Level INFO -Message "Finished Installing features" -LogPath $sync.logfile
 
-    if($sync["Form"]){
+    if ($sync["Form"]) {
         $sync.taskrunning = $false
-        [System.Windows.MessageBox]::Show("Features have been installed",'Installs are done!',"OK","Info")
+        [System.Windows.MessageBox]::Show("Features have been installed", 'Installs are done!', "OK", "Info")
     }
     
 }
@@ -945,21 +951,21 @@ $Sync.GUIUpdates = {
 
     #Check if any check boxes have been checked and if a task is currently running 
 
-        if ($sync.taskrunning -eq $true){
-            [System.Windows.MessageBox]::Show($sync.taskmessage,$sync.tasktitle,"OK","Info")
-            return
-        }
+    if ($sync.taskrunning -eq $true) {
+        [System.Windows.MessageBox]::Show($sync.taskmessage, $sync.tasktitle, "OK", "Info")
+        return
+    }
 
-        $sync.taskrunning = $true
+    $sync.taskrunning = $true
 
     #Invoke a runspace so that the GUI does not lock up  
         
-        $params = @{
-            ScriptBlock = $sync.ScriptUpdates
-            ArgumentList = ("$updatestoconfigure")
-        }
+    $params = @{
+        ScriptBlock  = $sync.ScriptUpdates
+        ArgumentList = ("$updatestoconfigure")
+    }
         
-        Invoke-Runspace @params
+    Invoke-Runspace @params
 
 }
 
@@ -988,9 +994,9 @@ $sync.ScriptUpdates = {
 
     function Write-Logs {
         param($Level, $Message, $LogPath)
-        Invoke-command $sync.WriteLogs -ArgumentList ($Level,$Message, $LogPath)
+        Invoke-command $sync.WriteLogs -ArgumentList ($Level, $Message, $LogPath)
     }
-    if($updatestoconfigure -eq "FixesUpdate"){
+    if ($updatestoconfigure -eq "FixesUpdate") {
         # Source: https://github.com/rgl/windows-vagrant/blob/master/disable-windows-updates.ps1 reversed! 
         Set-StrictMode -Version Latest
         $ProgressPreference = 'SilentlyContinue'
@@ -1025,7 +1031,7 @@ $sync.ScriptUpdates = {
             -Value 0 `
             -PropertyType DWORD `
             -Force `
-            | Out-Null
+        | Out-Null
         # set AUOptions.
         # 1: Keep my computer up to date has been disabled in Automatic Updates.
         # 2: Notify of download and installation.
@@ -1037,7 +1043,7 @@ $sync.ScriptUpdates = {
             -Value 3 `
             -PropertyType DWORD `
             -Force `
-            | Out-Null
+        | Out-Null
 
         # disable Windows Update Delivery Optimization.
         # NB this applies to Windows 10.
@@ -1052,7 +1058,7 @@ $sync.ScriptUpdates = {
                 -Value 0 `
                 -PropertyType DWORD `
                 -Force `
-                | Out-Null
+            | Out-Null
         }
         # Service tweaks for Windows Update
 
@@ -1158,10 +1164,10 @@ $sync.ScriptUpdates = {
         Get-BitsTransfer | Remove-BitsTransfer 
 
         Write-Logs -Level "INFO" -LogPath $sync.logfile -Message "10) Attempting to install the Windows Update Agent..." 
-        if([System.Environment]::Is64BitOperatingSystem){ 
+        if ([System.Environment]::Is64BitOperatingSystem) { 
             wusa Windows8-RT-KB2937636-x64 /quiet
         } 
-        else{ 
+        else { 
             wusa Windows8-RT-KB2937636-x86 /quiet
         } 
 
@@ -1174,7 +1180,7 @@ $sync.ScriptUpdates = {
         Write-Logs -Level "INFO" -LogPath $sync.logfile -Message "12) Forcing discovery..." 
         wuauclt /resetauthorization /detectnow 
     }
-    if($updatestoconfigure -eq "Updatesdisable"){
+    if ($updatestoconfigure -eq "Updatesdisable") {
         # Source: https://github.com/rgl/windows-vagrant/blob/master/disable-windows-updates.ps1
         Set-StrictMode -Version Latest
         $ProgressPreference = 'SilentlyContinue'
@@ -1252,7 +1258,7 @@ $sync.ScriptUpdates = {
             Get-Service -Name $service -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
         }
     }    
-    if($updatestoconfigure -eq "Updatessecurity"){
+    if ($updatestoconfigure -eq "Updatessecurity") {
         Write-Logs -Level "INFO" -LogPath $sync.logfile -Message "Disabling driver offering through Windows Update..."
         If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata")) {
             New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" -Force | Out-Null
@@ -1279,7 +1285,7 @@ $sync.ScriptUpdates = {
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" -Name "DeferFeatureUpdatesPeriodInDays" -Type DWord -Value 365
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" -Name "DeferQualityUpdatesPeriodInDays " -Type DWord -Value 4
     }    
-    if($updatestoconfigure -eq "Updatesdefault"){
+    if ($updatestoconfigure -eq "Updatesdefault") {
         If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU")) {
             New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force | Out-Null
         }
@@ -1319,9 +1325,9 @@ $sync.ScriptUpdates = {
 
     Write-Logs -Level "INFO" -LogPath $sync.logfile -Message "Process complete. Please reboot your computer."
 
-    if($sync["Form"]){
+    if ($sync["Form"]) {
         $sync.taskrunning = $false
-        [System.Windows.MessageBox]::Show("Updates have been configured",'Configuration is done!',"OK","Info")
+        [System.Windows.MessageBox]::Show("Updates have been configured", 'Configuration is done!', "OK", "Info")
     }
     
 }
@@ -1335,7 +1341,7 @@ $runspace.Open()
 $runspace.SessionStateProxy.SetVariable("sync", $sync)
 
 #Get ComputerInfo in the background
-Invoke-Runspace -ScriptBlock {$sync.ComputerInfo = Get-ComputerInfo} | Out-Null
+Invoke-Runspace -ScriptBlock { $sync.ComputerInfo = Get-ComputerInfo } | Out-Null
 
 #region form
 
@@ -1359,32 +1365,32 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #To use local files run $env:environment = "dev" before starting the ps1 file
-if($env:environment -eq "dev"){
+if ($env:environment -eq "dev") {
 
-    if($IsAdmin -eq $false){
-        [System.Windows.MessageBox]::Show("This application needs to be run as Admin",'Administrative privileges required',"OK","Info")
+    if ($IsAdmin -eq $false) {
+        [System.Windows.MessageBox]::Show("This application needs to be run as Admin", 'Administrative privileges required', "OK", "Info")
         return
     }
     
-    $confirm = [System.Windows.MessageBox]::Show('$ENV:Evnronment is set to dev. Do you wish to load the dev environment?','Dev Environment tag detected',"YesNo","Info")
+    $confirm = [System.Windows.MessageBox]::Show('$ENV:Evnronment is set to dev. Do you wish to load the dev environment?', 'Dev Environment tag detected', "YesNo", "Info")
 }
 
-if($confirm -eq "yes"){
+if ($confirm -eq "yes") {
     $inputXML = Get-Content "MainWindow.xaml"
     $configs | ForEach-Object {
         $sync["$PSItem"] = Get-Content .\config\$PSItem.json | ConvertFrom-Json
     }        
 }
-else{
+else {
 
     #Select the working branch
-    if($env:branch){
+    if ($env:branch) {
         $branch = $env:branch
     }
     
-    Else {$branch = $BranchToUse}
+    Else { $branch = $BranchToUse }
 
-    if($IsAdmin -eq $false){
+    if ($IsAdmin -eq $false) {
         Write-Output "This application needs to be run as an administrator. Attempting relaunch"
         Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "iwr -useb https://christitus.com/win | iex"
         break
@@ -1419,33 +1425,35 @@ write-host ""
 write-host "====Chris Titus Tech====="
 write-host "=====Windows Toolbox====="
 
-if($gui -eq $true){
-    $inputXML = $inputXML -replace 'mc:Ignorable="d"','' -replace "x:N",'N' -replace '^<Win.*', '<Window'
+if ($gui -eq $true) {
+    $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
     [xml]$XAML = $inputXML
-    $reader=(New-Object System.Xml.XmlNodeReader $xaml) 
+    $reader = (New-Object System.Xml.XmlNodeReader $xaml) 
 
-    try{$sync["Form"]=[Windows.Markup.XamlReader]::Load( $reader )}
+    try { $sync["Form"] = [Windows.Markup.XamlReader]::Load( $reader ) }
     catch [System.Management.Automation.MethodInvocationException] {
         Write-Warning "We ran into a problem with the XAML code.  Check the syntax for this control..."
         write-host $error[0].Exception.Message -ForegroundColor Red
-        if ($error[0].Exception.Message -like "*button*"){
-            write-warning "Ensure your &lt;button in the `$inputXML does NOT have a Click=ButtonClick property.  PS can't handle this`n`n`n`n"}
+        if ($error[0].Exception.Message -like "*button*") {
+            write-warning "Ensure your &lt;button in the `$inputXML does NOT have a Click=ButtonClick property.  PS can't handle this`n`n`n`n"
+        }
     }
-    catch{#if it broke some other way <img draggable="false" role="img" class="emoji" alt="ðŸ˜€" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/1f600.svg">
+    catch {
+        #if it broke some other way <img draggable="false" role="img" class="emoji" alt="ðŸ˜€" src="https://s0.wp.com/wp-content/mu-plugins/wpcom-smileys/twemoji/2/svg/1f600.svg">
         Write-Host "Unable to load Windows.Markup.XamlReader. Double-check syntax and ensure .net is installed."
     }
 
     # Store Form Objects In PowerShell
-    $xaml.SelectNodes("//*[@Name]") | ForEach-Object {$sync["$("$($psitem.Name)")"] = $sync["Form"].FindName($psitem.Name)}
+    $xaml.SelectNodes("//*[@Name]") | ForEach-Object { $sync["$("$($psitem.Name)")"] = $sync["Form"].FindName($psitem.Name) }
 
     #Gives every button the invoke-button function
     $sync.keys | ForEach-Object {
-        if($sync.$psitem){
-            if($($sync["$psitem"].GetType() | Select-Object -ExpandProperty Name) -eq "Button"){
+        if ($sync.$psitem) {
+            if ($($sync["$psitem"].GetType() | Select-Object -ExpandProperty Name) -eq "Button") {
                 $sync["$psitem"].Add_Click({
-                    [System.Object]$Sender = $args[0]
-                    Invoke-Button $Sender.name
-                })
+                        [System.Object]$Sender = $args[0]
+                        Invoke-Button $Sender.name
+                    })
             }
         }
     }
@@ -1490,39 +1498,39 @@ Example usage:
 
 #>
 
-If($env:args){
-Write-Verbose "Arguments Detected, Running Args"
+If ($env:args) {
+    Write-Verbose "Arguments Detected, Running Args"
 
-#Ensure Computer Info is populated before continuing
-$x = 0
-do{
-    Start-Sleep -Seconds 1
-    $x++
-}until($sync.ComputerInfo -or $x -eq 10)
-if($x -eq 5){Invoke-command $sync.WriteLogs -ArgumentList ("WARINING","Failed to pull computer info after 5 seconds, this can cause some scripts to fail.", $sync.logfile)}
+    #Ensure Computer Info is populated before continuing
+    $x = 0
+    do {
+        Start-Sleep -Seconds 1
+        $x++
+    }until($sync.ComputerInfo -or $x -eq 10)
+    if ($x -eq 5) { Invoke-command $sync.WriteLogs -ArgumentList ("WARINING", "Failed to pull computer info after 5 seconds, this can cause some scripts to fail.", $sync.logfile) }
 
-If($env:args -match '\bInstallUpgrade\b'){Invoke-command $sync.ScriptsInstallPrograms -ArgumentList "Upgrade"}
-If($env:args -match '\bUndoTweaks\b'){Invoke-command $sync.ScriptUndoTweaks}
-If($env:args -match '\bPanelControl\b'){cmd /c control}
-If($env:args -match '\bPanelNetwork\b'){cmd /c ncpa.cpl}
-If($env:args -match '\bPanelPower\b'){cmd /c powercfg.cpl}
-If($env:args -match '\bPanelSound\b'){cmd /c mmsys.cpl}
-If($env:args -match '\bPanelSystem\b'){cmd /c sysdm.cpl}
-If($env:args -match '\bPanelUser\b'){cmd /c "control userpasswords2"}
-If($env:args -match '\bDefaultUpdates\b'){Invoke-command $sync.ScriptUpdates -ArgumentList "Updatesdefault"}
-If($env:args -match '\bDisableUpdates\b'){Invoke-command $sync.ScriptUpdates -ArgumentList "Updatesdisable"}
-If($env:args -match '\bEnableSecurity\b'){Invoke-command $sync.ScriptUpdates -ArgumentList "Updatessecurity"}
-If($env:args -match '\bQuitAfter\b'){Break}
-If($env:args -match '\bInstall\b'){
-    $ProgramstoInstall = (($env:args-split " " | Where-Object {$_ -like "install*"} ) -split ":")[1]
-    Write-Verbose "Installing $ProgramstoInstall."
-    Invoke-command $sync.ScriptsInstallPrograms -ArgumentList "$ProgramstoInstall"
-}
-If($env:args -match '\bTweaks\b'){
-    $Tweakstorun = (($env:args-split " " | Where-Object {$_ -like "Tweaks*"} ) -split ":")[1]
-    Write-Verbose "Running the following tweaks $Tweakstorun."
-    Invoke-command $sync.ScriptTweaks -ArgumentList "$Tweakstorun"
-}
+    If ($env:args -match '\bInstallUpgrade\b') { Invoke-command $sync.ScriptsInstallPrograms -ArgumentList "Upgrade" }
+    If ($env:args -match '\bUndoTweaks\b') { Invoke-command $sync.ScriptUndoTweaks }
+    If ($env:args -match '\bPanelControl\b') { cmd /c control }
+    If ($env:args -match '\bPanelNetwork\b') { cmd /c ncpa.cpl }
+    If ($env:args -match '\bPanelPower\b') { cmd /c powercfg.cpl }
+    If ($env:args -match '\bPanelSound\b') { cmd /c mmsys.cpl }
+    If ($env:args -match '\bPanelSystem\b') { cmd /c sysdm.cpl }
+    If ($env:args -match '\bPanelUser\b') { cmd /c "control userpasswords2" }
+    If ($env:args -match '\bDefaultUpdates\b') { Invoke-command $sync.ScriptUpdates -ArgumentList "Updatesdefault" }
+    If ($env:args -match '\bDisableUpdates\b') { Invoke-command $sync.ScriptUpdates -ArgumentList "Updatesdisable" }
+    If ($env:args -match '\bEnableSecurity\b') { Invoke-command $sync.ScriptUpdates -ArgumentList "Updatessecurity" }
+    If ($env:args -match '\bQuitAfter\b') { Break }
+    If ($env:args -match '\bInstall\b') {
+        $ProgramstoInstall = (($env:args -split " " | Where-Object { $_ -like "install*" } ) -split ":")[1]
+        Write-Verbose "Installing $ProgramstoInstall."
+        Invoke-command $sync.ScriptsInstallPrograms -ArgumentList "$ProgramstoInstall"
+    }
+    If ($env:args -match '\bTweaks\b') {
+        $Tweakstorun = (($env:args -split " " | Where-Object { $_ -like "Tweaks*" } ) -split ":")[1]
+        Write-Verbose "Running the following tweaks $Tweakstorun."
+        Invoke-command $sync.ScriptTweaks -ArgumentList "$Tweakstorun"
+    }
 }
 
 Write-Host "Thank you for using winutil!"

@@ -1,8 +1,5 @@
 {
-  "Featuresdotnet": [
-    "NetFx4-AdvSrvs",
-    "NetFx3"
-  ],
+  "Featuresdotnet": ["NetFx4-AdvSrvs", "NetFx3"],
   "Featureshyperv": [
     "HypervisorPlatform",
     "Microsoft-Hyper-V-All",
@@ -19,10 +16,7 @@
     "DirectPlay",
     "LegacyComponents"
   ],
-  "Featurewsl": [
-    "VirtualMachinePlatform",
-    "Microsoft-Windows-Subsystem-Linux"
-  ],
+  "Featurewsl": ["VirtualMachinePlatform", "Microsoft-Windows-Subsystem-Linux"],
   "Featurenfs": [
     "ServicesForNFS-ClientOnly",
     "ClientForNFS-Infrastructure",
