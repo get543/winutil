@@ -14,7 +14,7 @@ Launch Command:
 iwr -useb https://christitus.com/win | iex
 ```
 
-Or shorter Thanks to [#144](/../../issues/144)
+Or shorter Thanks to [#144](https://github.com/ChrisTitusTech/winutil/issues/144)
 
 ```powershell
 irm christitus.com/win | iex
@@ -30,19 +30,26 @@ EXE Wrapper for $10 @ https://www.cttstore.com/windows-toolbox
 
 ## Overview
 
-- Install
-  - Installs all selected programs
-  - Has Upgrade ALL existing programs button
-- Tweaks
-  - Optimizes windows and reduces running processes
-  - Has recommended settings for each type of system
-- Config
-  - Quick configurations for Windows Installs
-  - Has old legacy panels from Windows 7
-  - Reset Windows Update to factory settings
-  - System Corruption Scan
-- Updates
-  - Fixes the default windows update scheme
+### Install
+
+- Installs all selected programs
+- Has Upgrade ALL existing programs button
+
+### Tweaks
+
+- Optimizes windows and reduces running processes
+- Has recommended settings for each type of system
+
+### Config
+
+- Quick configurations for Windows Installs
+- Has old legacy panels from Windows 7
+- Reset Windows Update to factory settings
+- System Corruption Scan
+
+### Updates
+
+- Fixes the default windows update scheme
 
 Video and Written Article walkthrough @ <https://christitus.com/windows-tool/>
 
