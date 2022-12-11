@@ -8,7 +8,7 @@ Requires you to launch PowerShell or Windows Terminal As ADMINISTRATOR!
 
 The recommended way is to right click on the start menu and select (PowerShell As Admin _Windows 10_ - Windows Terminal As Admin _Windows 11_)
 
-Launch Command:
+## Launch Command
 
 ```powershell
 iwr -useb https://christitus.com/win | iex
@@ -26,7 +26,7 @@ If you are having TLS 1.2 Issues or You cannot find or resolve `christitus.com/w
 [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/winutil.ps1')
 ```
 
-EXE Wrapper for $10 @ https://www.cttstore.com/windows-toolbox
+###### ***EXE Wrapper for $10 → https://www.cttstore.com/windows-toolbox***
 
 ## Overview
 
