@@ -6,7 +6,7 @@ function Invoke-WPFInstall {
     
     #>
 
-    if($sync.ProcessRunning){
+    if ($sync.ProcessRunning) {
         $msg = "Install process is currently running."
         [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
         return
@@ -22,7 +22,7 @@ function Invoke-WPFInstall {
 
     Invoke-WPFRunspace -ArgumentList $WingetInstall -scriptblock {
         param($WingetInstall)
-        try{
+        try {
             $sync.ProcessRunning = $true
 
             # Ensure winget is installed

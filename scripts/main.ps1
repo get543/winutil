@@ -1,22 +1,22 @@
 #region exception classes
 
-    class WingetFailedInstall : Exception {
-        [string] $additionalData
+class WingetFailedInstall : Exception {
+    [string] $additionalData
 
-        WingetFailedInstall($Message) : base($Message) {}
-    }
+    WingetFailedInstall($Message) : base($Message) {}
+}
     
-    class ChocoFailedInstall : Exception {
-        [string] $additionalData
+class ChocoFailedInstall : Exception {
+    [string] $additionalData
 
-        ChocoFailedInstall($Message) : base($Message) {}
-    }
+    ChocoFailedInstall($Message) : base($Message) {}
+}
 
-    class GenericException : Exception {
-        [string] $additionalData
+class GenericException : Exception {
+    [string] $additionalData
 
-        GenericException($Message) : base($Message) {}
-    }
+    GenericException($Message) : base($Message) {}
+}
     
 #endregion exception classes
 
@@ -45,12 +45,12 @@ catch {
 
 $xaml.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name) }
 
-$buttons = get-variable | Where-Object {$psitem.name -like "WPF*" -and $psitem.value -ne $null -and $psitem.value.GetType().name -eq "Button"}
-foreach ($button in $buttons){
+$buttons = get-variable | Where-Object { $psitem.name -like "WPF*" -and $psitem.value -ne $null -and $psitem.value.GetType().name -eq "Button" }
+foreach ($button in $buttons) {
     $button.value.Add_Click({
-        [System.Object]$Sender = $args[0]
-        Invoke-WPFButton "WPF$($Sender.name)"
-    })
+            [System.Object]$Sender = $args[0]
+            Invoke-WPFButton "WPF$($Sender.name)"
+        })
 }
 
 $WPFToggleDarkMode.IsChecked = Get-WinUtilDarkMode
@@ -74,10 +74,10 @@ Invoke-WPFRunspace -ScriptBlock {
 
 Invoke-WPFFormVariables
 
-try{
+try {
     Install-WinUtilChoco
 }
-Catch [ChocoFailedInstall]{
+Catch [ChocoFailedInstall] {
     Write-Host "==========================================="
     Write-Host "--    Chocolatey failed to install      ---"
     Write-Host "==========================================="

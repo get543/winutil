@@ -6,7 +6,7 @@ function Install-WinUtilWinget {
         Function is meant to ensure winget is installed 
     
     #>
-    Try{
+    Try {
         Write-Host "Checking if Winget is Installed..."
         if (Test-WinUtilPackageManager -winget) {
             #Checks if winget executable exists and if the Windows Version is 1809 or higher
@@ -15,7 +15,7 @@ function Install-WinUtilWinget {
         }
 
         #Gets the computer's information
-        if ($null -eq $sync.ComputerInfo){
+        if ($null -eq $sync.ComputerInfo) {
             $ComputerInfo = Get-ComputerInfo -ErrorAction Stop
         }
         Else {
@@ -31,7 +31,8 @@ function Install-WinUtilWinget {
         #Gets the Windows Edition
         $OSName = if ($ComputerInfo.OSName) {
             $ComputerInfo.OSName
-        }else {
+        }
+        else {
             $ComputerInfo.WindowsProductName
         }
 
@@ -44,7 +45,7 @@ function Install-WinUtilWinget {
 
             Start-Process powershell.exe -Verb RunAs -ArgumentList "-command irm https://raw.githubusercontent.com/ChrisTitusTech/winutil/$BranchToUse/winget.ps1 | iex | Out-Host" -WindowStyle Normal -ErrorAction Stop
 
-            if(!(Test-WinUtilPackageManager -winget)){
+            if (!(Test-WinUtilPackageManager -winget)) {
                 break
             }
         }
@@ -56,13 +57,13 @@ function Install-WinUtilWinget {
             $nid = (Get-Process AppInstaller).Id
             Wait-Process -Id $nid
 
-            if(!(Test-WinUtilPackageManager -winget)){
+            if (!(Test-WinUtilPackageManager -winget)) {
                 break
             }
         }
         Write-Host "Winget Installed"
     }
-    Catch{
+    Catch {
         throw [WingetFailedInstall]::new('Failed to install')
     }
 }

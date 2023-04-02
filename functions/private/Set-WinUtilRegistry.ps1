@@ -16,8 +16,8 @@ function Set-WinUtilRegistry {
         $Value
     )
 
-    Try{      
-        if(!(Test-Path 'HKU:\')){New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS}
+    Try {      
+        if (!(Test-Path 'HKU:\')) { New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS }
 
         If (!(Test-Path $Path)) {
             Write-Host "$Path was not found, Creating..."
@@ -33,7 +33,7 @@ function Set-WinUtilRegistry {
     Catch [System.Management.Automation.ItemNotFoundException] {
         Write-Warning $psitem.Exception.ErrorRecord
     }
-    Catch{
+    Catch {
         Write-Warning "Unable to set $Name due to unhandled exception"
         Write-Warning $psitem.Exception.StackTrace
     }

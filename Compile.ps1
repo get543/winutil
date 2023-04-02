@@ -12,20 +12,20 @@ Write-output '
 ################################################################################################################
 ' | Out-File ./$scriptname -Append -Encoding ascii
 
-(Get-Content .\scripts\start.ps1).replace('#{replaceme}',"$(get-date -format yy.MM.dd)") | Out-File ./$scriptname -Append -Encoding ascii
+(Get-Content .\scripts\start.ps1).replace('#{replaceme}', "$(get-date -format yy.MM.dd)") | Out-File ./$scriptname -Append -Encoding ascii
 
 Get-ChildItem .\functions -Recurse -File | ForEach-Object {
     Get-Content $psitem.FullName | Out-File ./$scriptname -Append -Encoding ascii
 }
 
 Get-ChildItem .\xaml | ForEach-Object {
-    $xaml = (Get-Content $psitem.FullName).replace("'","''")
+    $xaml = (Get-Content $psitem.FullName).replace("'", "''")
     
     Write-output "`$$($psitem.BaseName) = '$xaml'" | Out-File ./$scriptname -Append -Encoding ascii
 }
 
-Get-ChildItem .\config | Where-Object {$psitem.extension -eq ".json"} | ForEach-Object {
-    $json = (Get-Content $psitem.FullName).replace("'","''")
+Get-ChildItem .\config | Where-Object { $psitem.extension -eq ".json" } | ForEach-Object {
+    $json = (Get-Content $psitem.FullName).replace("'", "''")
     
     Write-output "`$sync.configs.$($psitem.BaseName) = '$json' `| convertfrom-json" | Out-File ./$scriptname -Append -Encoding ascii
 }

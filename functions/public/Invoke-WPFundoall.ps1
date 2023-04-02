@@ -6,20 +6,20 @@ function Invoke-WPFundoall {
     
     #>
 
-    if($sync.ProcessRunning){
+    if ($sync.ProcessRunning) {
         $msg = "Install process is currently running."
         [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
         return
     }
     
-      $Tweaks = Get-WinUtilCheckBoxes -Group "WPFTweaks"
+    $Tweaks = Get-WinUtilCheckBoxes -Group "WPFTweaks"
         
-      Invoke-WPFRunspace -ArgumentList $Tweaks -ScriptBlock {
+    Invoke-WPFRunspace -ArgumentList $Tweaks -ScriptBlock {
         param($Tweaks)
     
         $sync.ProcessRunning = $true
     
-        Foreach ($tweak in $tweaks){
+        Foreach ($tweak in $tweaks) {
             Invoke-WinUtilTweaks $tweak -undo $true
         }
     
@@ -34,10 +34,9 @@ function Invoke-WPFundoall {
         $MessageIcon = [System.Windows.MessageBoxImage]::Information
     
         [System.Windows.MessageBox]::Show($Messageboxbody, $MessageboxTitle, $ButtonType, $MessageIcon)
-      }
+    }
 
-<#
-
+    <#
     Write-Host "Creating Restore Point in case something bad happens"
     Enable-ComputerRestore -Drive "$env:SystemDrive"
     Checkpoint-Computer -Description "RestorePoint1" -RestorePointType "MODIFY_SETTINGS"

@@ -1,13 +1,13 @@
 Function Invoke-WPFDarkMode {
-        <#
+    <#
     
         .DESCRIPTION
         Sets Dark Mode on or off
     
     #>
     Param($DarkMoveEnabled)
-    Try{
-        if ($DarkMoveEnabled -eq $false){
+    Try {
+        if ($DarkMoveEnabled -eq $false) {
             Write-Host "Enabling Dark Mode"
             $DarkMoveValue = 0
         }
@@ -26,7 +26,7 @@ Function Invoke-WPFDarkMode {
     Catch [System.Management.Automation.ItemNotFoundException] {
         Write-Warning $psitem.Exception.ErrorRecord
     }
-    Catch{
+    Catch {
         Write-Warning "Unable to set $Name due to unhandled exception"
         Write-Warning $psitem.Exception.StackTrace
     }

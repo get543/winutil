@@ -10,14 +10,14 @@ function Invoke-WPFTab {
     Param ($ClickedTab)
     $Tabs = Get-Variable WPFTab?BT
     $TabNav = Get-Variable WPFTabNav
-    $x = [int]($ClickedTab -replace "WPFTab","" -replace "BT","") - 1
+    $x = [int]($ClickedTab -replace "WPFTab", "" -replace "BT", "") - 1
 
-    0..($Tabs.Count -1 ) | ForEach-Object {
+    0..($Tabs.Count - 1) | ForEach-Object {
         
-        if ($x -eq $psitem){
+        if ($x -eq $psitem) {
             $TabNav.value.Items[$psitem].IsSelected = $true
         }
-        else{
+        else {
             $TabNav.value.Items[$psitem].IsSelected = $false
         }
     }

@@ -15,11 +15,11 @@ function Invoke-WinUtilScript {
         [scriptblock]$scriptblock
     )
 
-    Try{
+    Try {
         Invoke-Command $scriptblock -ErrorAction stop
         Write-Host "Running Script for $name"
     }
-    Catch{
+    Catch {
         Write-Warning "Unable to run script for $name due to unhandled exception"
         Write-Warning $psitem.Exception.StackTrace 
     }

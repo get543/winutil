@@ -6,11 +6,11 @@ function Invoke-WPFtweaksbutton {
     
     #>
 
-  if($sync.ProcessRunning){
+  if ($sync.ProcessRunning) {
     $msg = "Install process is currently running."
     [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
     return
-}
+  }
 
   $Tweaks = Get-WinUtilCheckBoxes -Group "WPFTweaks"
 
@@ -21,8 +21,8 @@ function Invoke-WPFtweaksbutton {
 
     $sync.ProcessRunning = $true
 
-    Foreach ($tweak in $tweaks){
-        Invoke-WinUtilTweaks $tweak
+    Foreach ($tweak in $tweaks) {
+      Invoke-WinUtilTweaks $tweak
     }
 
     $sync.ProcessRunning = $false

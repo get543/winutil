@@ -7,10 +7,10 @@ function Install-WinUtilChoco {
     
     #>
 
-    try{
+    try {
         Write-Host "Checking if Chocolatey is Installed..."
 
-        if((Test-WinUtilPackageManager -choco)){
+        if ((Test-WinUtilPackageManager -choco)) {
             Write-Host "Chocolatey Already Installed"
             return
         }
@@ -23,7 +23,7 @@ function Install-WinUtilChoco {
             powershell choco feature enable -n allowGlobalConfirmation
         }
     }
-    Catch{
+    Catch {
         throw [ChocoFailedInstall]::new('Failed to install')
     }
 
